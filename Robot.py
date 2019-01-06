@@ -31,8 +31,3 @@ class Robot:
         while self.cs.reflected_light_intensity < (color-range) or (self.cs.reflected_light_intensity > color+range):
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
-
-#left = True, Right = False
-myRobot = Robot()
-myRobot.goToLine(5,5,10)
-myRobot.followLine(True,100) 
