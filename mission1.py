@@ -7,4 +7,4 @@ from Robot import Robot
 myRobot = Robot()
 #myRobot.goToLine(5,5,10)
 #myRobot.followLine(True,100) 
-myRobot.moveUntilDistanceAway(30)
+myRobot.moveUntilDistanceAway(30, 10)

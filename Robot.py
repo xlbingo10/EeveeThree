@@ -11,7 +11,7 @@ class Robot:
             self.ultrasonicSensor = UltrasonicSensor()
         except:
             self.ultrasonicSensor = None
-    def moveUntilDistanceAway(self,distance):
+    def moveUntilDistanceAway(self, distance, speed):
         '''
         the function makes the robot move until it is a certain distance away from an object
         distance is how far away the ultrasonic sensor is from an object
@@ -19,7 +19,7 @@ class Robot:
         '''
         if self.ultrasonicSensor != None:
             while self.ultrasonicSensor.distance_centimeters_continuous > distance:
-                self.tank.on(SpeedPercent(10),SpeedPercent(10))
+                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
             self.tank.off()
     def followLine(self,onLeft,followDistance):
         '''
