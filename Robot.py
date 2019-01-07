@@ -3,9 +3,11 @@
 import sys
 from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
+from ev3dev2.led import Leds
 
 class Robot:
-    def __init__ (self):
+    def __init__ (self, sensorList= []):
+        
         self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
         try:
             self.cs = ColorSensor()
@@ -40,6 +42,25 @@ class Robot:
                 self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
             self.tank.off()
 
+        self.nSensors = 0
+        for sensor in sensorList:
+            if sensor == "color":
+                try:
+                    self.cs = ColorSensor()
+                    self.nSensors += 1
+                except:
+                    self.cs = None
+        self.allSensorsFound = False
+        if self.nSensors == len(sensorList):
+            self.allSensorsFound = True
+    def flashLEDs (self, color):
+        my_leds = Leds()
+        my_leds.all_off()
+        my_leds.set_color("LEFT", color)
+        my_leds.set_color("RIGHT", color)
+        my_leds.all_off()
+        my_leds.set_color("LEFT", "GREEN")
+        my_leds.set_color("RIGHT", "GREEN")
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will

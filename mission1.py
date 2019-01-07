@@ -5,6 +5,6 @@ from Robot import Robot
 
 #left = True, Right = False
 myRobot = Robot()
-#myRobot.goToLine(5,5,10)
-#myRobot.followLine(True,100) 
-myRobot.moveUntilDistanceAway(30, 10)
+myRobot.goToLine(5,5,4) #def goToLine(color, range, speed):
+myRobot.followLine(False,100) #def followLine(onLeft,followDistance):
+
