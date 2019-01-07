@@ -1,12 +1,26 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
 from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
-from ev3dev2.sensor.lego import ColorSensor
+from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor
 
 class Robot:
     def __init__ (self):
         self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
         self.cs = ColorSensor()
+        try:
+            self.ultrasonicSensor = UltrasonicSensor()
+        except:
+            self.ultrasonicSensor = None
+    def moveUntilDistanceAway(self,distance):
+        '''
+        the function makes the robot move until it is a certain distance away from an object
+        distance is how far away the ultrasonic sensor is from an object
+        
+        '''
+        if self.ultrasonicSensor != None:
+            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
+                self.tank.on(SpeedPercent(10),SpeedPercent(10))
+            self.tank.off()
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will
