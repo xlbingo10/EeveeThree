@@ -7,6 +7,15 @@ class Robot:
     def __init__ (self):
         self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
         self.cs = ColorSensor()
+    def Turning (self,degree,direction):
+        if direction == 'right':
+            left_speed = 30
+            right_speed = 20
+        else:
+            left_speed = 20
+            right_speed = 30   
+        self.tank.on_for_degrees(left_speed, right_speed, degree)
+
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will
@@ -34,5 +43,6 @@ class Robot:
 
 #left = True, Right = False
 myRobot = Robot()
-myRobot.goToLine(5,5,10)
-myRobot.followLine(True,100) 
+'''myRobot.goToLine(5,5,10)
+myRobot.followLine(True,100) '''
+myRobot.Turning(90,'right')
