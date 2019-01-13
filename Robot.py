@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
 from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
-from ev3dev2.sensor.lego import ColorSensor
+from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor
 
 class Robot:
     def __init__ (self):
         self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
         self.cs = ColorSensor()
-    def Turning (self,degree,direction):
+
+        try:
+            self.ultrasonicSensor = UltrasonicSensor()
+        except:
+            self.ultrasonicSensor = None
+
+    # note:  this function doesn quite work yet
+    def turn(self,degree,direction):
         if direction == 'right':
             left_speed = 30
             right_speed = 20
@@ -16,6 +23,17 @@ class Robot:
             right_speed = 30   
         self.tank.on_for_degrees(left_speed, right_speed, degree)
 
+    def moveUntilDistanceAway(self, distance, speed):
+        '''
+        the function makes the robot move until it is a certain distance away from an object
+        distance is how far away the ultrasonic sensor is from an object
+        
+        '''
+        if self.ultrasonicSensor != None:
+            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
+                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
+            self.tank.off()
+>>>>>>> 0e9d190bb179a040c531edacb0ae9b5d01b9b0ba:Robot.py
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will
@@ -24,6 +42,7 @@ class Robot:
 
         '''
     
+        
         angleMult = 1 #this sets the variable angleMult to 1
         if not onLeft: #If the perameter onLeft is defined as True, then the variable angleMult is 3
             angleMult = 3 #setting angleMult to 3 makes the robot turn in a way so it follows the left side
@@ -43,6 +62,5 @@ class Robot:
 
 #left = True, Right = False
 myRobot = Robot()
-'''myRobot.goToLine(5,5,10)
-myRobot.followLine(True,100) '''
-myRobot.Turning(90,'right')
+myRobot.goToLine(5,5,10)
+myRobot.followLine(True,100) 
