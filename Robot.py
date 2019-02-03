@@ -43,6 +43,10 @@ class Robot:
             self.tank.off()
 
         self.nSensors = 0
+            self.ultrasonicSensor = UltrasonicSensor()
+        except:
+            self.ultrasonicSensor = None
+            self.nSensors = 0
         for sensor in sensorList:
             if sensor == "color":
                 try:
@@ -61,12 +65,26 @@ class Robot:
         my_leds.all_off()
         my_leds.set_color("LEFT", "GREEN")
         my_leds.set_color("RIGHT", "GREEN")
+    def moveUntilDistanceAway(self, distance, speed):
+        '''
+        the function makes the robot move until it is a certain distance away from an object
+        distance is how far away the ultrasonic sensor is from an object
+        
+        '''
+        if self.ultrasonicSensor != None:
+            print ("Distance:", distance) 
+            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
+                print ("Distance:", self.ultrasonicSensor.distance_centimeters_continuous)
+                self.tank.on(SpeedPercent(10),SpeedPercent(10))
+                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
+                self.tank.off()
+        else: 
+            print ("Error with ultrasonic sensor!")
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will
         make the robot run on the left or right side of the line.
         make it True for left and False for Right
-
         '''
     
         
@@ -83,8 +101,15 @@ class Robot:
         self.tank.off()
 
     def goToLine(self, color, range, speed):
+        self.cs = ColorSensor()
         while self.cs.reflected_light_intensity < (color-range) or (self.cs.reflected_light_intensity > color+range):
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
-
+    def moveForwardRot(self, rotations, speed):
+        self.tank.on_for_rotations(speed, speed, rotations)
+        self.tank.off()
+    def moveForwardCm(self, centimeters, speed, circ):
+        self.tank.on_for_rotations(speed, speed, float(centimeters)/circ)
+        self.tank.off()
+    
 
