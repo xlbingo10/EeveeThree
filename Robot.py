@@ -1,28 +1,34 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
+import sys
 from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
-from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor
+from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
 
 class Robot:
     def __init__ (self):
         self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
-        self.cs = ColorSensor()
-
+        try:
+            self.cs = ColorSensor()
+        except:
+            self.cs = None
+        try:
+            self.gyro = GyroSensor()
+        except:
+            self.gyro = None
         try:
             self.ultrasonicSensor = UltrasonicSensor()
         except:
             self.ultrasonicSensor = None
 
     # note:  this function doesn quite work yet
-    def turn(self,degree,direction):
-        if direction == 'right':
-            left_speed = 30
-            right_speed = 20
-        else:
-            left_speed = 20
-            right_speed = 30   
-        self.tank.on_for_degrees(left_speed, right_speed, degree)
-
+    def turn(self,degree,leftmotor,rightmotor):
+        if self.gyro is None:
+            print ("Gyro Needed For All Uses Of Turn")
+            sys.exit(1)
+        self.tank.on(leftmotor,rightmotor)
+        self.gyro.reset()
+        self.gyro.wait_until_angle_changed_by(degree)
+        self.tank.off()
     def moveUntilDistanceAway(self, distance, speed):
         '''
         the function makes the robot move until it is a certain distance away from an object
@@ -33,7 +39,7 @@ class Robot:
             while self.ultrasonicSensor.distance_centimeters_continuous > distance:
                 self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
             self.tank.off()
->>>>>>> 0e9d190bb179a040c531edacb0ae9b5d01b9b0ba:Robot.py
+
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will
@@ -60,7 +66,4 @@ class Robot:
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
 
-#left = True, Right = False
-myRobot = Robot()
-myRobot.goToLine(5,5,10)
-myRobot.followLine(True,100) 
+
