@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
-from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
+from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor
 
 class Robot:
     def __init__ (self):
-        self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
-        self.cs = ColorSensor()
+        self.tank = MoveTank(OUTPUT_B,OUTPUT_C)
+        #self.medium = MediumMotor(OUTPUT_D)
+        self.large = LargeMotor(OUTPUT_D)
+        try: 
+            self.cs = ColorSensor()
+        except:
+            self.cs = None
         try:
             self.ultrasonicSensor = UltrasonicSensor()
         except:
@@ -46,3 +51,7 @@ class Robot:
         while self.cs.reflected_light_intensity < (color-range) or (self.cs.reflected_light_intensity > color+range):
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
+
+    def moveLargeMotor(self):
+        self.large.on_for_rotations(SpeedPercent(75), 0.5)
+    
