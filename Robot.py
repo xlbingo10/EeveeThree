@@ -1,21 +1,36 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
-from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
-from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor
+import sys
+from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
+from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
+from ev3dev2.led import Leds
 
 class Robot:
-    def __init__ (self):
-        self.tank = MoveTank(OUTPUT_B,OUTPUT_C)
-        #self.medium = MediumMotor(OUTPUT_D)
-        self.large = LargeMotor(OUTPUT_D)
-        try: 
+    def __init__ (self, sensorList= []):
+        
+        self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
+        try:
             self.cs = ColorSensor()
         except:
             self.cs = None
         try:
+            self.gyro = GyroSensor()
+        except:
+            self.gyro = None
+        try:
             self.ultrasonicSensor = UltrasonicSensor()
         except:
             self.ultrasonicSensor = None
+
+    # note:  this function doesn quite work yet
+    def turn(self,degree,leftmotor,rightmotor):
+        if self.gyro is None:
+            print ("Gyro Needed For All Uses Of Turn")
+            sys.exit(1)
+        self.tank.on(leftmotor,rightmotor)
+        self.gyro.reset()
+        self.gyro.wait_until_angle_changed_by(degree)
+        self.tank.off()
     def moveUntilDistanceAway(self, distance, speed):
         '''
         the function makes the robot move until it is a certain distance away from an object
@@ -26,12 +41,50 @@ class Robot:
             while self.ultrasonicSensor.distance_centimeters_continuous > distance:
                 self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
             self.tank.off()
+
+        self.nSensors = 0
+            self.ultrasonicSensor = UltrasonicSensor()
+        except:
+            self.ultrasonicSensor = None
+            self.nSensors = 0
+        for sensor in sensorList:
+            if sensor == "color":
+                try:
+                    self.cs = ColorSensor()
+                    self.nSensors += 1
+                except:
+                    self.cs = None
+        self.allSensorsFound = False
+        if self.nSensors == len(sensorList):
+            self.allSensorsFound = True
+    def flashLEDs (self, color):
+        my_leds = Leds()
+        my_leds.all_off()
+        my_leds.set_color("LEFT", color)
+        my_leds.set_color("RIGHT", color)
+        my_leds.all_off()
+        my_leds.set_color("LEFT", "GREEN")
+        my_leds.set_color("RIGHT", "GREEN")
+    def moveUntilDistanceAway(self, distance, speed):
+        '''
+        the function makes the robot move until it is a certain distance away from an object
+        distance is how far away the ultrasonic sensor is from an object
+        
+        '''
+        if self.ultrasonicSensor != None:
+            print ("Distance:", distance) 
+            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
+                print ("Distance:", self.ultrasonicSensor.distance_centimeters_continuous)
+                self.tank.on(SpeedPercent(10),SpeedPercent(10))
+                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
+                self.tank.off()
+        else: 
+            print ("Error with ultrasonic sensor!")
     def followLine(self,onLeft,followDistance):
         '''
         onLeft, the first perameter, is a True/False value that will
         make the robot run on the left or right side of the line.
         make it True for left and False for Right
-
         '''
     
         
@@ -48,6 +101,7 @@ class Robot:
         self.tank.off()
 
     def goToLine(self, color, range, speed):
+        self.cs = ColorSensor()
         while self.cs.reflected_light_intensity < (color-range) or (self.cs.reflected_light_intensity > color+range):
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
@@ -55,3 +109,11 @@ class Robot:
     def moveLargeMotor(self):
         self.large.on_for_rotations(SpeedPercent(75), 0.5)
     
+    def moveForwardRot(self, rotations, speed):
+        self.tank.on_for_rotations(speed, speed, rotations)
+        self.tank.off()
+    def moveForwardCm(self, centimeters, speed, circ):
+        self.tank.on_for_rotations(speed, speed, float(centimeters)/circ)
+        self.tank.off()
+    
+
