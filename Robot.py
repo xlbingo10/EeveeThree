@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
-import sys 
-import time
-from ev3dev2.motor import LargeMotor, OUTPUT_D, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
+import sys
+from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
 from ev3dev2.led import Leds
 
@@ -119,4 +118,10 @@ class Robot:
     def moveForwardCm(self, centimeters, speed, circ):
         self.tank.on_for_rotations(speed, speed, float(centimeters)/circ)
         self.tank.off()
-    
+    def stopAll(self):
+        self.tank.off()
+        try:
+            lm = LargeMotor(OUTPUT_D)
+            lm.stop()
+        except:
+            pass
