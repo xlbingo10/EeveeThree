@@ -29,19 +29,35 @@ class Robot:
             print ("Gyro Needed For All Uses Of Turn")
             sys.exit(1)
         self.tank.on(leftmotor,rightmotor)
-        self.gyro.reset()
+        #self.gyro.reset()
         self.gyro.wait_until_angle_changed_by(degree)
         self.tank.off()
-#    def moveUntilDistanceAway(self, distance, speed):
-#       '''
- #      the function makes the robot move until it is a certain distance away from an object
-   #     distance is how far away the ultrasonic sensor is from an object
-    #    
-     #   '''
-      #  if self.ultrasonicSensor != None:
-     #       while self.ultrasonicSensor.distance_centimeters_continuous > distance:
-      #          self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
-       #     self.tank.off()
+
+    def moveUntilDistanceAway(self, distance, speed):
+        '''
+        the function makes the robot move until it is a certain distance away from an object
+        distance is how far away the ultrasonic sensor is from an object
+        
+        '''
+        if self.ultrasonicSensor != None:
+            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
+                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
+            self.tank.off()
+
+        self.nSensors = 0
+        self.ultrasonicSensor = UltrasonicSensor()
+        
+        for sensor in sensorList:
+            if sensor == "color":
+                try:
+                    self.cs = ColorSensor()
+                    self.nSensors += 1
+                except:
+                    self.cs = None
+        self.allSensorsFound = False
+        if self.nSensors == len(sensorList):
+            self.allSensorsFound = True
+
     def flashLEDs (self, color):
         my_leds = Leds()
         my_leds.all_off()
