@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
-import sys
-from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
+import sys 
+import time
+from ev3dev2.motor import LargeMotor, OUTPUT_D, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
 from ev3dev2.led import Leds
 
@@ -31,32 +32,16 @@ class Robot:
         self.gyro.reset()
         self.gyro.wait_until_angle_changed_by(degree)
         self.tank.off()
-    def moveUntilDistanceAway(self, distance, speed):
-        '''
-        the function makes the robot move until it is a certain distance away from an object
-        distance is how far away the ultrasonic sensor is from an object
-        
-        '''
-        if self.ultrasonicSensor != None:
-            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
-                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
-            self.tank.off()
-
-        self.nSensors = 0
-            self.ultrasonicSensor = UltrasonicSensor()
-        except:
-            self.ultrasonicSensor = None
-            self.nSensors = 0
-        for sensor in sensorList:
-            if sensor == "color":
-                try:
-                    self.cs = ColorSensor()
-                    self.nSensors += 1
-                except:
-                    self.cs = None
-        self.allSensorsFound = False
-        if self.nSensors == len(sensorList):
-            self.allSensorsFound = True
+#    def moveUntilDistanceAway(self, distance, speed):
+#       '''
+ #      the function makes the robot move until it is a certain distance away from an object
+   #     distance is how far away the ultrasonic sensor is from an object
+    #    
+     #   '''
+      #  if self.ultrasonicSensor != None:
+     #       while self.ultrasonicSensor.distance_centimeters_continuous > distance:
+      #          self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
+       #     self.tank.off()
     def flashLEDs (self, color):
         my_leds = Leds()
         my_leds.all_off()
@@ -106,8 +91,11 @@ class Robot:
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
 
-    def moveLargeMotor(self):
-        self.large.on_for_rotations(SpeedPercent(75), 0.5)
+    def moveLargeMotor(self, speed):
+        self.large = LargeMotor(OUTPUT_D)
+        self.large.on_for_rotations(SpeedPercent(speed), -0.5)
+        time.sleep(0.5)
+        self.large.on_for_rotations(SpeedPercent(speed), 0.5)
     
     def moveForwardRot(self, rotations, speed):
         self.tank.on_for_rotations(speed, speed, rotations)
@@ -116,4 +104,3 @@ class Robot:
         self.tank.on_for_rotations(speed, speed, float(centimeters)/circ)
         self.tank.off()
     
-
