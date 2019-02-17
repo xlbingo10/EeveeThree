@@ -7,9 +7,11 @@ from ev3dev2.led import Leds
 
 class Robot:
     def __init__ (self, sensorList= []):
-        
-        self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
-        self.outputList = [ OUTPUT_B, OUTPUT_C]
+        try:
+            self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
+            self.outputList = [ OUTPUT_B, OUTPUT_C]
+        except:
+            self.tank = None
         try:
             self.cs = ColorSensor()
         except:
@@ -22,42 +24,25 @@ class Robot:
             self.ultrasonicSensor = UltrasonicSensor()
         except:
             self.ultrasonicSensor = None
+        try:
+            self.large = LargeMotor(OUTPUT_D)
+            self.outputList.append(OUTPUT_D)
+        except:
+            self.large = None
+
 
     # note:  this function doesn quite work yet
     def turn(self,degree,leftmotor,rightmotor):
         if self.gyro is None:
             print ("Gyro Needed For All Uses Of Turn")
             sys.exit(1)
+        if self.tank is None:
+            print ("Tank Needed For All Uses Of Turn")
+            sys.exit(1)
         self.tank.on(leftmotor,rightmotor)
         #self.gyro.reset()
         self.gyro.wait_until_angle_changed_by(degree)
         self.tank.off()
-
-    def moveUntilDistanceAway(self, distance, speed):
-        '''
-        the function makes the robot move until it is a certain distance away from an object
-        distance is how far away the ultrasonic sensor is from an object
-        
-        '''
-        if self.ultrasonicSensor != None:
-            while self.ultrasonicSensor.distance_centimeters_continuous > distance:
-                self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
-            self.tank.off()
-
-        self.nSensors = 0
-        self.ultrasonicSensor = UltrasonicSensor()
-        
-        for sensor in sensorList:
-            if sensor == "color":
-                try:
-                    self.cs = ColorSensor()
-                    self.nSensors += 1
-                except:
-                    self.cs = None
-        self.allSensorsFound = False
-        if self.nSensors == len(sensorList):
-            self.allSensorsFound = True
-
     def flashLEDs (self, color):
         my_leds = Leds()
         my_leds.all_off()
@@ -72,6 +57,9 @@ class Robot:
         distance is how far away the ultrasonic sensor is from an object
         
         '''
+        if self.tank is None:
+            print ("Tank Needed For All Uses Of moveUntilDistanceAway")
+            sys.exit(1)
         if self.ultrasonicSensor != None:
             print ("Distance:", distance) 
             while self.ultrasonicSensor.distance_centimeters_continuous > distance:
@@ -88,7 +76,9 @@ class Robot:
         make it True for left and False for Right
         '''
     
-        
+        if self.tank is None:
+            print ("Tank Needed For All Uses Of followLine")
+            sys.exit(1)
         angleMult = 1 #this sets the variable angleMult to 1
         if not onLeft: #If the perameter onLeft is defined as True, then the variable angleMult is 3
             angleMult = 3 #setting angleMult to 3 makes the robot turn in a way so it follows the left side
@@ -102,22 +92,29 @@ class Robot:
         self.tank.off()
 
     def goToLine(self, color, range, speed):
+        if self.tank is None:
+            print ("Tank Needed For All Uses Of goToLine")
+            sys.exit(1)
         self.cs = ColorSensor()
         while self.cs.reflected_light_intensity < (color-range) or (self.cs.reflected_light_intensity > color+range):
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
 
     def moveLargeMotor(self, speed):
-        self.large = LargeMotor(OUTPUT_D)
-        self.outputList.append(OUTPUT_D)
         self.large.on_for_rotations(SpeedPercent(speed), -0.5)
         time.sleep(0.5)
         self.large.on_for_rotations(SpeedPercent(speed), 0.5)
     
     def moveForwardRot(self, rotations, speed):
+        if self.tank is None:
+            print ("Tank Needed For All Uses Of moveForwardRot")
+            sys.exit(1)
         self.tank.on_for_rotations(speed, speed, rotations)
         self.tank.off()
     def moveForwardCm(self, centimeters, speed, circ):
+        if self.tank is None:
+            print ("Tank Needed For All Uses Of moveForwardCm")
+            sys.exit(1)
         self.tank.on_for_rotations(speed, speed, float(centimeters)/circ)
         self.tank.off()
     def stopAll(self):
