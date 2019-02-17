@@ -8,5 +8,5 @@ myRobot = Robot()
 
 #"myRobot.":
 myRobot.tank.on(10, 10)
-time.sleep(2)
+time.sleep(5)
 myRobot.stopAll()

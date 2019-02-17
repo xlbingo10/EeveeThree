@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
 import sys
-from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
+from ev3dev2.motor import Motor, MediumMotor, LargeMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
 from ev3dev2.led import Leds
 
@@ -9,6 +9,7 @@ class Robot:
     def __init__ (self, sensorList= []):
         
         self.tank = MoveTank(OUTPUT_B,OUTPUT_C) 
+        self.outputList = [ OUTPUT_B, OUTPUT_C]
         try:
             self.cs = ColorSensor()
         except:
@@ -108,6 +109,7 @@ class Robot:
 
     def moveLargeMotor(self, speed):
         self.large = LargeMotor(OUTPUT_D)
+        self.outputList.append(OUTPUT_D)
         self.large.on_for_rotations(SpeedPercent(speed), -0.5)
         time.sleep(0.5)
         self.large.on_for_rotations(SpeedPercent(speed), 0.5)
@@ -121,7 +123,8 @@ class Robot:
     def stopAll(self):
         self.tank.off()
         try:
-            lm = LargeMotor(OUTPUT_D)
-            lm.stop()
+            for out in self.outputList:
+                m = Motor(out)
+                m.stop()
         except:
             pass
