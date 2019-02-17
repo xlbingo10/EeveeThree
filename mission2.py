@@ -12,5 +12,9 @@ moveForwardRot(rotations, speed)
 moveForwardCm(rotations,speed,circ(16.5 on standard wheel))
 moveLargeMotor(speed)
 '''
-myRobot.moveForwardCm(46,40,16.5)
-myRobot.moveLargeMotor(20)
+#check
+try:
+    myRobot.moveForwardCm(46,40,16.5)
+    myRobot.moveLargeMotor(20)
+except:
+    myRobot.stopAll()
