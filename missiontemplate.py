@@ -11,7 +11,7 @@ followLine(onLeft(left = True, Right = False),followDistance),
 goToLine(color(B=0, W=100), range, speed),
 moveForwardRot(rotations, speed)
 moveForwardCm(rotations, speed, circ(16.5 on a standard wheel))
-moveLargeMotor()
+moveLargeMotor(speed)
 '''
 #check
 try:

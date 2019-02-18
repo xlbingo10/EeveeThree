@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
-import sys
+import sys, time
 from ev3dev2.motor import Motor, MediumMotor, LargeMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
 from ev3dev2.led import Leds
