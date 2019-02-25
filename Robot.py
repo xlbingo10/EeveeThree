@@ -29,6 +29,11 @@ class Robot:
             self.outputList.append(OUTPUT_D)
         except:
             self.large = None
+        try:
+            self.medium = MediumMotor(OUTPUT_D)
+            self.outputList.append(OUTPUT_D)
+        except:
+            self.medium = None
 
 
     # note:  this function doesn quite work yet
@@ -100,10 +105,16 @@ class Robot:
             self.tank.on(SpeedPercent(speed),SpeedPercent(speed))
         self.tank.off()
 
-    def moveLargeMotor(self, speed):
-        self.large.on_for_rotations(SpeedPercent(speed), -0.5)
-        time.sleep(0.5)
-        self.large.on_for_rotations(SpeedPercent(speed), 0.5)
+    def moveMotor(self, speed, lorm, dist):
+        if lorm == "M":
+            self.medium.on_for_rotations(SpeedPercent(speed), -dist)
+            time.sleep(0.5)
+            self.medium.on_for_rotations(SpeedPercent(speed), dist)
+        if lorm == "L":
+            self.large.on_for_rotations(SpeedPercent(speed), -dist)
+            time.sleep(0.5)
+            self.large.on_for_rotations(SpeedPercent(speed), dist)
+        
     
     def moveForwardRot(self, rotations, speed):
         if self.tank is None:

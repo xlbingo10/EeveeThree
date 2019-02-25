@@ -3,7 +3,7 @@
 
 from Robot import Robot
 myRobot = Robot()
-import time
+import time 
 '''
 "myRobot.":
 moveUntilDistanceAway(distance, speed), 
@@ -14,14 +14,4 @@ moveForwardCm(rotations, speed, circ(16.5 on a standard wheel))
 moveLargeMotor(speed,lorm(M=medium, L=large))
 '''
 #check
-try:
-    # my program here
-    #del pass
-    pass
-    sound.speak('Success')
-except:
-    myRobot.stopAll()
-    sound.speak('Exception')
-
-
-
+myRobot.moveMotor(100,"L",0.7)
