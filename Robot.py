@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #import sys sys.path.append()
-import sys, time
+import sys, time, math
 from ev3dev2.motor import Motor, MediumMotor, LargeMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, UltrasonicSensor, GyroSensor
 from ev3dev2.led import Leds
@@ -122,7 +122,9 @@ class Robot:
             sys.exit(1)
         self.tank.on_for_rotations(speed, speed, rotations)
         self.tank.off()
-    def moveForwardCm(self, centimeters, speed, circ):
+    def moveForwardCm(self, centimeters, speed, diam):
+        
+        circ = math.pi*diam
         if self.tank is None:
             print ("Tank Needed For All Uses Of moveForwardCm")
             sys.exit(1)
