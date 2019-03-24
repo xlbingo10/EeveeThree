@@ -19,7 +19,7 @@ moveLargeMotor(speed)
 #check
 try:
     myRobot.moveForwardCm(46,40,16.5)
-    myRobot.moveLargeMotor(20)
+    myRobot.moveMotor(20)
     myRobot.moveForwardCm(-46,40,16.5)
     sound.speak('Success')
 except:
