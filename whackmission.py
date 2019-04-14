@@ -13,6 +13,7 @@ moveForwardRot(rotations, speed)
 moveForwardCm(rotations, speed, diam(5.35 on a standard wheel))
 moveLargeMotor(speed,lorm(M=medium, L=large),dist(distance moved))
 '''
-myRobot.moveForwardCm(45,30,5.35)
+myRobot.moveForwardCm(65,30,5.35)
 myRobot.goToLine(0,10,10)
 myRobot.moveMotor(100,"L",0.7)
+myRobot.moveForwardCm(-100,30,5.35)

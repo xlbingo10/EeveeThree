@@ -127,7 +127,7 @@ class Robot:
         circ = math.pi*diam
         if self.tank is None:
             print ("Tank Needed For All Uses Of moveForwardCm")
-            sys.exit(1)
+            sys.exit(2)
         self.tank.on_for_rotations(speed, speed, float(centimeters)/circ)
         self.tank.off()
     def stopAll(self):
